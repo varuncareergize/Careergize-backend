@@ -123,8 +123,10 @@ STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_ALL_ORIGINS = True
-
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
-    "https://careergize-backend.onrender.com/",
+    "https://careergize-backend.onrender.com",
     "https://www.careergize.com/"
+    "https://careergize-backend.onrender.com",
 ]

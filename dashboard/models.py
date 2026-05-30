@@ -41,6 +41,7 @@ class Schedule(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.SET_NULL, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    meeting_link = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         ordering = ['start_time']
