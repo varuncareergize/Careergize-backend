@@ -1,8 +1,8 @@
-# dashboard/views.py
+from django.contrib.auth.models import User
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
 
 from .models import (
     StudentProfile,
@@ -12,22 +12,39 @@ from .models import (
 )
 
 from .serializers import (
+    DashboardSerializer,
     StudentProfileSerializer,
     TaskSerializer,
     InstructorSerializer,
-    ScheduleSerializer,
-    DashboardSerializer
+    ScheduleSerializer
 )
+
 
 class StudentDashboardAPIView(APIView):
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
 
-        user = User.objects.filter(id=2).first()
+        username = request.GET.get("username")
 
-        if not user:
+        if not username:
             return Response(
-                {"error": "Student account not found"},
+                {
+                    "error": "username parameter required"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(
+                username=username
+            )
+
+        except User.DoesNotExist:
+
+            return Response(
+                {
+                    "error": "User not found"
+                },
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -38,235 +55,98 @@ class StudentDashboardAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
-class StudentProfileAPIView(APIView):
-
-    def get(self, request, pk=None):
-
-        # Get single profile
-        if pk:
-            try:
-                profile = StudentProfile.objects.get(id=pk)
-                serializer = StudentProfileSerializer(profile)
-                return Response(serializer.data)
-
-            except StudentProfile.DoesNotExist:
-                return Response(
-                    {"error": "Profile not found"},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-
-        # Get all profiles
-        profiles = StudentProfile.objects.all()
-        serializer = StudentProfileSerializer(profiles, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = StudentProfileSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, pk):
-        try:
-            profile = StudentProfile.objects.get(id=pk)
-        except StudentProfile.DoesNotExist:
-            return Response(
-                {"error": "Profile not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        serializer = StudentProfileSerializer(
-            profile,
-            data=request.data
-        )
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        try:
-            profile = StudentProfile.objects.get(id=pk)
-        except StudentProfile.DoesNotExist:
-            return Response(
-                {"error": "Profile not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        profile.delete()
-        return Response(
-            {"message": "Profile deleted successfully"},
-            status=status.HTTP_204_NO_CONTENT
-        )
-    
 
 class TaskAPIView(APIView):
 
-    def get(self, request, pk=None):
-        if pk:
-            try:
-                task = Task.objects.get(id=pk)
-                serializer = TaskSerializer(task)
-                return Response(serializer.data)
-            except Task.DoesNotExist:
-                return Response({"error": "Task not found"}, status=404)
+    def get(self, request):
 
-        serializer = TaskSerializer(Task.objects.all(), many=True)
-        return Response(serializer.data)
+        tasks = Task.objects.all()
 
-
-    def post(self, request):
-        serializer = TaskSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, pk):
-        try:
-            task = Task.objects.get(id=pk)
-        except Task.DoesNotExist:
-            return Response(
-                {"error": "Task not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        serializer = TaskSerializer(task, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        try:
-            task = Task.objects.get(id=pk)
-        except Task.DoesNotExist:
-            return Response(
-                {"error": "Task not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        task.delete()
-
-        return Response(
-            {"message": "Task deleted successfully"},
-            status=status.HTTP_204_NO_CONTENT
+        serializer = TaskSerializer(
+            tasks,
+            many=True
         )
 
-class InstructorAPIView(APIView):
+        return Response(serializer.data)
 
     def post(self, request):
-        serializer = InstructorSerializer(data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, pk):
-        try:
-            instructor = Instructor.objects.get(id=pk)
-        except Instructor.DoesNotExist:
-            return Response(
-                {"error": "Instructor not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        serializer = InstructorSerializer(
-            instructor,
+        serializer = TaskSerializer(
             data=request.data
         )
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        try:
-            instructor = Instructor.objects.get(id=pk)
-        except Instructor.DoesNotExist:
             return Response(
-                {"error": "Instructor not found"},
-                status=status.HTTP_404_NOT_FOUND
+                serializer.data,
+                status=201
             )
 
-        instructor.delete()
-
         return Response(
-            {"message": "Instructor deleted successfully"},
-            status=status.HTTP_204_NO_CONTENT
+            serializer.errors,
+            status=400
         )
+
 
 class ScheduleAPIView(APIView):
 
-    def get(self, request, pk=None):
-        if pk:
-            try:
-                schedule = Schedule.objects.get(id=pk)
-                serializer = ScheduleSerializer(schedule)
-                return Response(serializer.data)
-            except Schedule.DoesNotExist:
-                return Response({"error": "Schedule not found"}, status=404)
+    def get(self, request):
+
+        schedules = Schedule.objects.all()
 
         serializer = ScheduleSerializer(
-            Schedule.objects.all(),
+            schedules,
             many=True
         )
+
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = ScheduleSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, pk):
-        try:
-            schedule = Schedule.objects.get(id=pk)
-        except Schedule.DoesNotExist:
-            return Response(
-                {"error": "Schedule not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
 
         serializer = ScheduleSerializer(
-            schedule,
             data=request.data
         )
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        try:
-            schedule = Schedule.objects.get(id=pk)  
-        except Schedule.DoesNotExist:
             return Response(
-                {"error": "Schedule not found"},
-                status=status.HTTP_404_NOT_FOUND
+                serializer.data,
+                status=201
             )
 
-        schedule.delete()
+        return Response(
+            serializer.errors,
+            status=400
+        )
+
+
+class InstructorAPIView(APIView):
+
+    def get(self, request):
+
+        instructors = Instructor.objects.all()
+
+        serializer = InstructorSerializer(
+            instructors,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    def post(self, request):
+
+        serializer = InstructorSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=201
+            )
 
         return Response(
-            {"message": "Schedule deleted successfully"},
-            status=status.HTTP_204_NO_CONTENT
+            serializer.errors,
+            status=400
         )

@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,6 +11,7 @@ class LoginAPIView(APIView):
         
         if serializer.is_valid():
             user = serializer.validated_data['user']
+            login(request, user)
             return Response({
                 "message": "Login successful",
                 "user_id": user.id,
