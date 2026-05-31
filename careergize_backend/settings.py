@@ -121,25 +121,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+CORS_ALLOW_ALL_ORIGINS = True
 
-# When ALLOW_ALL_ORIGINS is True, you cannot use ALLOW_CREDENTIALS.
-# For login (sessions) to work, we need to specify the origins.
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:5173", # Common Vite port
-    "https://www.careergize.com",
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-# Set these to False for local development (HTTP)
+CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:8000",
     "https://careergize-backend.onrender.com",
     "https://www.careergize.com/",
 ]
