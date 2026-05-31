@@ -5,6 +5,7 @@ from .views import (
     TaskAPIView,
     ScheduleAPIView,
     InstructorAPIView,
+    StudentProfileAPIView,
 )
 
 urlpatterns = [
@@ -31,5 +32,11 @@ urlpatterns = [
         "instructors/",
         InstructorAPIView.as_view(),
         name="instructors"
+    ),
+
+    path(
+        "profiles/",
+        StudentProfileAPIView.as_view(),
+        name="profiles"
     ),
 ]
