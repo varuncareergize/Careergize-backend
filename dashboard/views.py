@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from .models import (
     StudentProfile,
@@ -21,33 +22,10 @@ from .serializers import (
 
 
 class StudentDashboardAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
-        username = request.GET.get("username")
-
-        if not username:
-            return Response(
-                {
-                    "error": "username parameter required"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            user = User.objects.get(
-                username=username
-            )
-
-        except User.DoesNotExist:
-
-            return Response(
-                {
-                    "error": "User not found"
-                },
-                status=status.HTTP_404_NOT_FOUND
-            )
-
+        user = request.user
         serializer = DashboardSerializer(user)
 
         return Response(
