@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.split_pattern if hasattr(admin.site, 'split_pattern') else admin.site.urls),
     path('api/', include('dashboard.urls')),
     path('api/', include('login.urls')),
+    path('api/', include('attendance.urls')),
 ]
