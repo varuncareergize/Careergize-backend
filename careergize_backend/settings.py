@@ -128,5 +128,5 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
     "https://careergize-backend.onrender.com",
-    "https://www.careergize.com/",
+    "https://www.careergize.com",
 ]
