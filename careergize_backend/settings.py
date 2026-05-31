@@ -122,8 +122,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Set to False for local development to allow sessions over HTTP
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
     "https://careergize-backend.onrender.com",

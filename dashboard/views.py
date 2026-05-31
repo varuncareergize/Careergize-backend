@@ -22,12 +22,27 @@ from .serializers import (
 
 
 class StudentDashboardAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    # Removed IsAuthenticated to allow public access via username parameter
 
     def get(self, request):
-        user = request.user
-        serializer = DashboardSerializer(user)
+        username = request.query_params.get("username")
 
+        if username:
+            user = User.objects.filter(username__iexact=username).first()
+            if not user:
+                return Response(
+                    {"error": "Student account not found"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        elif request.user.is_authenticated:
+            user = request.user
+        else:
+            return Response(
+                {"error": "Username parameter is required for unauthenticated access"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = DashboardSerializer(user)
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
