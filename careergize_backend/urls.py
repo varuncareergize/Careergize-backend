@@ -23,4 +23,8 @@ urlpatterns = [
     path('api/', include('dashboard.urls')),
     path('api/', include('login.urls')),
     path('api/', include('attendance.urls')),
+     path(
+        "api/",
+        include("chatbot.urls")
+    )
 ]

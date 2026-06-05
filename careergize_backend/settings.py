@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'login',
     'attendance',
+       "chatbot",
 ]
 
 MIDDLEWARE = [
