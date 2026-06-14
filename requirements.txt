@@ -15,8 +15,10 @@ httpx==0.28.1
 idna==3.18
 numpy==2.4.6
 pandas==3.0.3
+psycopg==3.3.4
 psycopg-binary==3.3.4
 psycopg-pool==3.3.1
+pycopg==0.3.1
 pydantic==2.13.4
 pydantic_core==2.46.4
 python-dateutil==2.9.0.post0
