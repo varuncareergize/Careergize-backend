@@ -23,8 +23,9 @@ urlpatterns = [
     path('api/', include('dashboard.urls')),
     path('api/', include('login.urls')),
     path('api/', include('attendance.urls')),
-     path(
+    path(
         "api/",
         include("chatbot.urls")
-    )
+    ),
+    path('api/', include('projects.urls')),
 ]
