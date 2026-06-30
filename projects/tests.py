@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from rest_framework.test import APIRequestFactory
 
 from .models import Client, Project, Team
+from .serializers import ProjectSerializer
 
 
 class ProjectAssignmentTests(TestCase):
@@ -24,6 +26,25 @@ class ProjectAssignmentTests(TestCase):
         self.assertEqual(project.assigned_users.count(), 2)
         self.assertIn(user_one, project.assigned_users.all())
         self.assertIn(user_two, project.assigned_users.all())
+
+    def test_project_serializer_includes_assigned_user_details(self):
+        User = get_user_model()
+        user = User.objects.create_user(username='carol', password='password123', first_name='Carol')
+
+        client = Client.objects.create(name='Globex')
+        team = Team.objects.create(name='Operations')
+        project = Project.objects.create(
+            name='Mobile App',
+            client=client,
+            team=team,
+            delivery_date='2026-10-15',
+        )
+        project.assigned_users.add(user)
+
+        serializer = ProjectSerializer(project)
+
+        self.assertEqual(serializer.data['assigned_users'][0]['username'], 'carol')
+        self.assertEqual(serializer.data['assigned_users'][0]['first_name'], 'Carol')
 
     def test_project_calculates_amount_left(self):
         client = Client.objects.create(name='Beta Corp')

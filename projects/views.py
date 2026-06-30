@@ -1,9 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Client, Team, Project
-from .serializers import ClientSerializer, TeamSerializer, ProjectSerializer
+from .serializers import ClientSerializer, TeamSerializer, ProjectSerializer, UserSerializer
 
 
 class ClientListCreateAPIView(APIView):
@@ -156,6 +157,17 @@ class TeamDetailAPIView(APIView):
             )
         team.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserListAPIView(APIView):
+    """
+    List all registered users.
+    """
+
+    def get(self, request):
+        users = get_user_model().objects.all().order_by('username')
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProjectListCreateAPIView(APIView):
