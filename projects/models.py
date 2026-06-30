@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -40,9 +41,14 @@ class Project(models.Model):
         default=0
     )
     description = models.TextField(blank=True, default='')
-    
-    # Store people as a simple JSON list to directly match your frontend data structure
-    people = models.JSONField(default=list, blank=True)
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    amount_collected = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+
+    assigned_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='assigned_projects',
+        blank=True,
+    )
     github_url = models.URLField(max_length=500, blank=True, default='')
     
     status = models.CharField(
@@ -72,4 +78,8 @@ class Project(models.Model):
         if val in ['planning', 'pending']:
             return 'Pending'
         return 'Active'
+
+    @property
+    def amount_left(self):
+        return self.total_amount - self.amount_collected
 # Create your models here.

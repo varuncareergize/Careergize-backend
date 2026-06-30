@@ -27,7 +27,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('name', 'description', 'client', 'team')
         }),
         ('Project Details', {
-            'fields': ('status', 'progress', 'delivery_date', 'github_url', 'people')
+            'fields': ('status', 'progress', 'delivery_date', 'github_url', 'assigned_users')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
