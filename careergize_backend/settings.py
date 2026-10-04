@@ -31,9 +31,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-lkf!jqt%1z9a$ul(6-+dis3+q0tlu_2p-55qw4%zr@+_3!h@id'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "api.careergize.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
