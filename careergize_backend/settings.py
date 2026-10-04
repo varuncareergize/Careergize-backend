@@ -144,10 +144,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:8000",
-    "https://careergize-backend.onrender.com",
     "https://www.careergize.com",
+    "https://careergize.com",
+    "https://api.careergize.com",
 ]
-
 # Task files are served only through the authenticated download endpoint.
 MEDIA_ROOT = BASE_DIR / 'private_uploads'
 
