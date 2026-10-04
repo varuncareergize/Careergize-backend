@@ -87,8 +87,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-DATABASES['default'] = dj_database_url.parse('postgresql://careergize_database_backend_user:ba1LdAQVJctJb8MbhOacVnoPJia9ic9v@dpg-d8n98ou7r5hc73ai1l1g-a.oregon-postgres.render.com/careergize_database_backend', conn_max_age=600)
-# Password validation
+
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -126,11 +125,23 @@ STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Set to False for local development to allow sessions over HTTP
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "http://127.0.0.1:8000",
     "https://careergize-backend.onrender.com",
     "https://www.careergize.com",
 ]
+
+# Task files are served only through the authenticated download endpoint.
+MEDIA_ROOT = BASE_DIR / 'private_uploads'
+
+# Employee attendance/leave calendar (Monday=0, Sunday=6).
+EMPLOYEE_TIME_ZONE = 'Asia/Kolkata'
+EMPLOYEE_WEEK_OFF_DAYS = [5, 6]
+EMPLOYEE_HOLIDAYS = []  # ISO dates such as '2026-12-25'.
+ALLOW_BACKDATED_LEAVE = False
