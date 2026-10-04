@@ -11,9 +11,6 @@ from rest_framework import status
 from .serializers import LoginSerializer
 
 class LoginAPIView(APIView):
-    def get(self, request, *args, **kwargs):
-        return Response({'csrf_token': get_token(request)})
-
     def post(self, request, *args, **kwargs):
         # Pass request context so authenticate() can use it if needed
         serializer = LoginSerializer(data=request.data, context={'request': request})
